@@ -1,0 +1,8 @@
+Demo,1234567890,d@g.com
+abdul,9845377685,ab@gmail.com
+balaji,8976567654,ba@gmail.com
+dinesh kumar,2345678901,d1@g.com
+hari,9878076459,hari@gm.co
+nandha,6758498749,nandha@gmail.com
+siva,9392665238,siva@gmail.com
+sreenath,9384725334,sreena@gmail.com

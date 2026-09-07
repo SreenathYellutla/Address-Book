@@ -3,7 +3,7 @@
 #include <string.h>
 #include "contact.h"
 #include "file.h"
-
+// Displays all contacts after sorting them by Name, Phone, or Email
 void listContacts(AddressBook *addressBook) 
 {
     int choice;
@@ -14,6 +14,7 @@ void listContacts(AddressBook *addressBook)
     scanf("%d", &choice);
     switch (choice){
         case 1:
+        // Sort contacts alphabetically by name
         for(int i=0;i<addressBook->contactCount;i++){
             for(int j=0;j<addressBook->contactCount-i-1;j++){
                 if(strcmp(addressBook->contacts[j].name,addressBook->contacts[j+1].name)>0){
@@ -25,6 +26,7 @@ void listContacts(AddressBook *addressBook)
         }
         break;
         case 2:
+         // Sort contacts in ascending order by phone number
         for(int i=0;i<addressBook->contactCount;i++){
             for(int j=0;j<addressBook->contactCount-i-1;j++){
                 if(strcmp(addressBook->contacts[j].phone,addressBook->contacts[j+1].phone)>0){
@@ -36,6 +38,7 @@ void listContacts(AddressBook *addressBook)
         }
         break;
         case 3:
+        // Sort contacts alphabetically by email
         for(int i=0;i<addressBook->contactCount;i++){
             for(int j=0;j<addressBook->contactCount-i-1;j++){
                 if(strcmp(addressBook->contacts[j].email,addressBook->contacts[j+1].email)>0){
@@ -48,9 +51,11 @@ void listContacts(AddressBook *addressBook)
         break;
         
     }
+    // Print the table heading
     printf(CYAN "+-----+----------------------+--------------+-------------------------------+\n");
     printf(CYAN "| " RESET YELLOW "No. " RESET CYAN "| " RESET YELLOW "Name                " RESET CYAN " |" RESET YELLOW "Phone         " RESET CYAN "| " RESET YELLOW "Email                       " RESET CYAN "  |\n" RESET);
     printf(CYAN "+-----+----------------------+--------------+-------------------------------+\n");
+     // Print every contact stored in the AddressBook
     for(int i = 0; i < addressBook->contactCount; i++)
     {
         printf(CYAN "| " RESET "%-4d" CYAN "| " RESET "%-21s" CYAN "| " RESET "%-13s" CYAN "| " RESET "%-30s"
@@ -62,20 +67,24 @@ void listContacts(AddressBook *addressBook)
     }   
     printf(CYAN "+-----+----------------------+--------------+-------------------------------+" RESET "\n");   
 }
-
+// Initializes the AddressBook and loads contacts from the file
 void initialize(AddressBook *addressBook) {
     addressBook->contactCount = 0;
     loadContactsFromFile(addressBook);
 }
-
+// Saves all contacts to the file and exits the program
 void saveAndExit(AddressBook *addressBook) {
     saveContactsToFile(addressBook); 
     exit(EXIT_SUCCESS); 
 }
-
+// Validates whether the entered name contains only allowed characters
 int validate_name(char *name)
 {
     int i=0;
+    /*LOOP till name[i] != '\0'
+        check name[i] is not in the range of A to Z, a to z, ' ', '.'
+            return 0; // invalid
+    END LOOP*/
     while(name[i]!='\0'){
         if(!((name[i]>='A' && name[i]<='Z') || (name[i]>='a' && name[i]<='z') || name[i]==' ' || name[i]=='.')){
             return 0;
@@ -84,7 +93,7 @@ int validate_name(char *name)
     }
     return 1;
 }
-
+// Validates phone number format and checks for duplicate numbers
 int validate_phone(char *str,AddressBook *addressBook)
 {
      if(str[0]<'6' && str[0]>'9'){
@@ -99,18 +108,30 @@ int validate_phone(char *str,AddressBook *addressBook)
             return -2;
         }
     }
+     // Check whether the phone number already exists
     for(int i=0;i<addressBook->contactCount;i++){
         if(strcmp(str,addressBook->contacts[i].phone)==0){
             return 0;
         }
     }
+    // Loop till str[i] != '\0'
+    //     check the str[i] is not in the rage '0' to '9'
+    //         return 0; invalid
+    
+    // check unique or not
+    //     not => return 0;
+
+
+
+    // return 1 // valid; vp
     return 1;
 }
-
+// Validates email format and checks for duplicate email IDs
 int validate_mail(char *mail,AddressBook *addressBook){
     int a=0;
     int b=0;
     int c=0;
+    // Check if the first character of the email is a lowercase letter
     if(!(mail[0]>='a'&&mail[0]<='z'))return -7;
     for(int i=0;mail[i]!='\0';i++){
         if (!((mail[i] >= 'a' && mail[i] <= 'z') ||(mail[i] >= '0' && mail[i] <= '9') ||mail[i] == '@' ||mail[i] == '.'))return -5;
@@ -135,6 +156,7 @@ int validate_mail(char *mail,AddressBook *addressBook){
     int diff=b-a;
     if(diff==1)return -6;
     if(diff<0)return -3;
+     // Check every character in the email
     for(int i = 0; i < addressBook->contactCount; i++)
     {
         if(strcmp(mail, addressBook->contacts[i].email) == 0)
@@ -142,7 +164,7 @@ int validate_mail(char *mail,AddressBook *addressBook){
     }
     return 1;
 }
-
+// Creates a new contact after validating the name, phone number, and email
 void createContact(AddressBook *addressBook)
 {
     char name[20];
@@ -159,6 +181,7 @@ void createContact(AddressBook *addressBook)
         if(valid==0)printf(RED"-------Invalid Name------\n"RESET);
     }
     char mobile[11];
+    // Validates the phone number format and checks for duplicates
     while(1)
     {
         printf(CYAN"Enter the phone : "RESET);
@@ -181,6 +204,7 @@ void createContact(AddressBook *addressBook)
         }
     }
     char mail[30];
+    // Validates the email format and checks for duplicates
     while(1)
     {
         printf(CYAN"Enter the mail : "RESET);
@@ -190,7 +214,8 @@ void createContact(AddressBook *addressBook)
         printf(GREEN"----Contact created succesfully----\n"RESET);
             break;
         }
-         if(valid==-7)printf(RED"Invalid E-Mail : Email must start with Aplabet\n"RESET);
+        // Check for various email validation errors and print corresponding messages
+        if(valid==-7)printf(RED"Invalid E-Mail : Email must start with Aplabet\n"RESET);
         if(valid==-1)printf(RED"Invalid E-Mail : Multiple @ symbols are not allowed\n"RESET);
         if(valid==-2)printf(RED"Invalid E-Mail : Missing @\n"RESET);
         if(valid==-3)printf(RED"Invalid E-Mail : (@) Come before (.)\n"RESET);
@@ -204,7 +229,7 @@ void createContact(AddressBook *addressBook)
     strcpy(addressBook->contacts[addressBook->contactCount].phone,mobile);
     addressBook->contactCount++;
 }
-
+// Searches for a contact by phone number and displays the contact details if found
 int search_by_phone(AddressBook *addressBook)
 {
     char str[11];
@@ -225,7 +250,7 @@ int search_by_phone(AddressBook *addressBook)
     }
     return -1;
 }
-
+// Searches for a contact by name and displays the contact details if found
 int search_by_name(AddressBook *addressBook)
 {
     char str[20];
@@ -262,6 +287,7 @@ int search_by_name(AddressBook *addressBook)
         printf(CYAN "------------------------------------------\n" RESET);
         return ind;
     }
+    // If multiple contacts with the same name are found, prompt the user to choose one
     else if(count > 1){
         int choice;
 
@@ -298,7 +324,7 @@ int search_by_name(AddressBook *addressBook)
     }
     return -1;
 }
-
+// Searches for a contact by email and displays the contact details if found
 int search_by_mail(AddressBook *addressBook){
     char mail[30];
     printf(CYAN"Enter Email: "RESET);
@@ -348,35 +374,35 @@ void searchContact(AddressBook *addressBook)
     }while(c!=3 && choise>'3');
 
 }
-
+// Edits the name of a contact after validating the new name
 void edit_phone(AddressBook *addressBook,int res){
     int valid;
     char mobile[11];
     while(1){
         printf(CYAN"Enter the Edit phone : "RESET);
         scanf(" %[^\n]",mobile);
-        valid = validate_phone(mobile, addressBook);
+        valid = validate_phone(mobile, addressBook);// Validate the new phone number
         if(valid==1){
             break;
         }
     }
     strcpy(addressBook->contacts[res].phone,mobile);
 }
-
+// Edits the email of a contact after validating the new email
 void edit_mail(AddressBook *addressBook,int res){
     int valid;
     char mail[30];
     while(1){
         printf(CYAN"Enter the Edit email : "RESET);
         scanf(" %[^\n]",mail);
-        valid = validate_mail(mail, addressBook);
+        valid = validate_mail(mail, addressBook);// Validate the new email
         if(valid==1){
             break;
         }
     }
     strcpy(addressBook->contacts[res].email,mail);
 }
-
+// Edits the name of a contact after validating the new name
 void edit_name(AddressBook *addressBook, int res)
 {
   
@@ -386,13 +412,13 @@ void edit_name(AddressBook *addressBook, int res)
     {
         printf(CYAN"Enter the Edit name : "RESET);
         scanf(" %[^\n]", name);
-        valid = validate_name(name);
+        valid = validate_name(name);// Validate the new name
         if(valid == 1)// valid
             break;
     }
     strcpy(addressBook->contacts[res].name, name);
 }
-
+// Edits a contact by searching for it and allowing the user to choose which field to edit
 void editContact(AddressBook *addressBook)
 {
     char Choice;
@@ -407,6 +433,7 @@ void editContact(AddressBook *addressBook)
         printf(CYAN"Choose the search option : \n"RESET);
 
         scanf(" %c", &Choice);
+        // Search for the contact based on the user's choice
         switch(Choice)
         {
             case '1':
@@ -428,6 +455,7 @@ void editContact(AddressBook *addressBook)
         break;
        
     }while(1);
+    // If the contact is not found, return from the function
     printf(BLUE"\nEdit\n");
     printf("1. Name\n");
     printf("2. Phone\n");
@@ -454,7 +482,7 @@ void editContact(AddressBook *addressBook)
     }
     printf(GREEN"\nContact Updated Successfully.\n"RESET);
 }
-
+// Deletes a contact by searching for it and removing it from the AddressBook
 void deleteContact(AddressBook *addressBook)
 {
     char choice;
@@ -465,6 +493,7 @@ void deleteContact(AddressBook *addressBook)
     printf("3. Email\n"RESET);
     printf(CYAN"Choose the search option : "RESET);
     scanf(" %c",&choice);
+    // Search for the contact based on the user's choice
     switch(choice)
     {
         case '1':

@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include "contact.h"
+//
 int main() 
 {
     char choice;
     AddressBook addressBook;
-    initialize(&addressBook);
+    initialize(&addressBook);// Initialize the AddressBook
+    // Load contacts from the file if it exists
     do 
     {
+        // Display the main menu
         printf(CYAN "+===============================================+\n" RESET);
         printf(CYAN "|" YELLOW "                 ADDRESS BOOK                  " CYAN "|\n" RESET);
         printf(CYAN "+===============================================+\n" RESET);
@@ -20,6 +23,7 @@ int main()
 		printf("\n");		
         printf(ORANGE"Enter your choice: "RESET);
         scanf(" %c",&choice);
+        // Handle the user's choice using a switch statement
         switch (choice) 
         {
             case '1':

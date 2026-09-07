@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "file.h"
-
+// Saves all contacts to the file and exits the program
 void saveContactsToFile(AddressBook *addressBook) {
    FILE *fp = fopen("contacts.txt", "w");
     if(fp == NULL)
@@ -17,7 +17,7 @@ void saveContactsToFile(AddressBook *addressBook) {
     }
     fclose(fp); 
 }
-
+// Loads contacts from the file into the AddressBook
 void loadContactsFromFile(AddressBook *addressBook) {
     FILE *fp = fopen("contacts.txt", "r");
 
